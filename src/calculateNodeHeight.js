@@ -37,10 +37,15 @@ let hiddenTextarea;
 
 export default function calculateNodeHeight(uiTextNode,
     useCache = false,
+    iframeId,
     minRows = null, maxRows = null) {
   if (!hiddenTextarea) {
     hiddenTextarea = document.createElement('textarea');
-    document.body.appendChild(hiddenTextarea);
+    if (iframeId !== null && window.parent.document.getElementById(iframeId)) {
+      window.parent.document.getElementById(iframeId).contentDocument.body.appendChild(hiddenTextarea)
+    } else {
+      document.body.appendChild(hiddenTextarea);
+    }
   }
 
   // Copy all CSS properties that have an impact on the height of the content in

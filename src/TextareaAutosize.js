@@ -47,13 +47,19 @@ export default class TextareaAutosize extends React.Component {
     /**
      * Maximum number of rows to show.
      */
-    maxRows: React.PropTypes.number
+    maxRows: React.PropTypes.number,
+
+    /**
+     * If textarea is in iframe, set iframe's id
+     */
+    iframeId: React.PropTypes.string,
   }
 
   static defaultProps = {
     onChange: emptyFunction,
     onHeightChange: emptyFunction,
-    useCacheForDOMMeasurements: false
+    useCacheForDOMMeasurements: false,
+    iframeId: null,
   }
 
   constructor(props) {
@@ -151,6 +157,7 @@ export default class TextareaAutosize extends React.Component {
     this.setState(calculateNodeHeight(
       this._rootDOMNode,
       useCacheForDOMMeasurements,
+      this.props.iframeId,
       this.props.rows || this.props.minRows,
       this.props.maxRows));
   }
