@@ -35,6 +35,13 @@ const SIZING_STYLE = [
 let computedStyleCache = {};
 let hiddenTextarea;
 
+export function clearHiddenTextarea(iframeId) {
+  if (iframeId !== null && window.parent.document.getElementById(iframeId) && hiddenTextarea) {
+    window.parent.document.getElementById(iframeId).contentDocument.body.removeChild(hiddenTextarea)
+    hiddenTextarea = undefined
+  }
+}
+
 export default function calculateNodeHeight(uiTextNode,
     useCache = false,
     iframeId,

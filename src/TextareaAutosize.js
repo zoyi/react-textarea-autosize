@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import calculateNodeHeight from './calculateNodeHeight';
+import calculateNodeHeight, { clearHiddenTextarea } from './calculateNodeHeight';
 
 const emptyFunction = function() {};
 
@@ -129,6 +129,7 @@ export default class TextareaAutosize extends React.Component {
     // Remove any scheduled events to prevent manipulating the node after it's
     // been unmounted.
     this._clearNextFrame();
+    clearHiddenTextarea(this.props.iframeId);
     window.removeEventListener('resize', this._resizeComponent);
   }
 
