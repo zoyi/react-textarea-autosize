@@ -83,6 +83,7 @@ export default class TextareaAutosize extends React.Component {
       maxRows: _maxRows,
       onHeightChange: _onHeightChange,
       useCacheForDOMMeasurements: _useCacheForDOMMeasurements,
+      iframeId: _iframeId,
       ...props,
     } = this.props;
     if (typeof valueLink === 'object') {
