@@ -4,7 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import calculateNodeHeight, { purgeCache } from './calculateNodeHeight';
+import calculateNodeHeight, { clearHiddenTextarea, purgeCache } from './calculateNodeHeight';
 import isBrowser from './isBrowser';
 import uid from './uid';
 
@@ -24,12 +24,14 @@ export default class TextareaAutosize extends React.Component {
     minRows: PropTypes.number,
     maxRows: PropTypes.number,
     inputRef: PropTypes.func,
+    iframeId: React.PropTypes.string,
   };
 
   static defaultProps = {
     onChange: noop,
     onHeightChange: noop,
     useCacheForDOMMeasurements: false,
+    iframeId: null,
   };
 
   _resizeLock = false;
@@ -53,6 +55,7 @@ export default class TextareaAutosize extends React.Component {
       onHeightChange: _onHeightChange,
       useCacheForDOMMeasurements: _useCacheForDOMMeasurements,
       inputRef: _inputRef,
+      iframeId: _iframeId,
       ...props
     } = this.props;
 
@@ -107,6 +110,7 @@ export default class TextareaAutosize extends React.Component {
 
   componentWillUnmount() {
     this._clearNextFrame();
+    clearHiddenTextarea(this.props.iframeId);
     window.removeEventListener('resize', this._resizeListener);
     purgeCache(this._uid);
   }
@@ -139,6 +143,7 @@ export default class TextareaAutosize extends React.Component {
     const nodeHeight = calculateNodeHeight(
       this._rootDOMNode,
       this._uid,
+      this.props.iframeId,
       this.props.useCacheForDOMMeasurements,
       this.props.minRows,
       this.props.maxRows,

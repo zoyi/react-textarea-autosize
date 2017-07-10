@@ -1,6 +1,6 @@
 import isBrowser from './isBrowser';
 const isIE = isBrowser ? !!document.documentElement.currentStyle : false;
-const hiddenTextarea = isBrowser && document.createElement('textarea');
+let hiddenTextarea = undefined;
 
 const HIDDEN_TEXTAREA_STYLE = {
   'min-height': '0',
@@ -41,12 +41,20 @@ let computedStyleCache = {};
 export default function calculateNodeHeight(
   uiTextNode,
   uid,
+  iframeId,
   useCache = false,
   minRows = null,
   maxRows = null,
 ) {
-  if (hiddenTextarea.parentNode === null) {
-    document.body.appendChild(hiddenTextarea);
+  if (!hiddenTextarea) {
+    hiddenTextarea = isBrowser && document.createElement('textarea');
+    if (hiddenTextarea.parentNode === null) {
+      if (iframeId !== null && window.parent.document.getElementById(iframeId)) {
+        window.parent.document.getElementById(iframeId).contentDocument.body.appendChild(hiddenTextarea);
+      } else {
+        document.body.appendChild(hiddenTextarea);
+      }
+    }
   }
 
   // Copy all CSS properties that have an impact on the height of the content in
@@ -162,6 +170,13 @@ function calculateNodeStyling(node, uid, useCache = false) {
   }
 
   return nodeInfo;
+}
+
+export function clearHiddenTextarea(iframeId) {
+  if (iframeId !== null && window.parent.document.getElementById(iframeId) && hiddenTextarea) {
+    window.parent.document.getElementById(iframeId).contentDocument.body.removeChild(hiddenTextarea);
+    hiddenTextarea = undefined;
+  }
 }
 
 export const purgeCache = uid => delete computedStyleCache[uid];
